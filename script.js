@@ -62,7 +62,10 @@ function fetchData(){
         headers:{
             "Content-Type":"application/json",
             Accept:"application/json",
-            Authorization:"Bearer 3bbe64909f74383193384911a3d817cc10c5fae71c13a9bca3f4db4f1bb880a1"
+
+            //use your bearer token after bearer below
+
+            Authorization:"Bearer "
         },
         body:JSON.stringify(formData)
     }
