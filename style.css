@@ -3,22 +3,22 @@
 .main-heading{
     font-family: roboto;
     font-size: 30px;
-    font-size: bold;
+    font-weight: 600;
 }
 
-.gender-style{
+.form-label{
     font-family: roboto;
-    font-size: 15px;
+    font-size: 25px;
+    font-weight: 500;
 }
 
 .err-msg{
     color: red;
     font-family: roboto;
-    font-size: 16px;
+    font-size: 17px;
 }
-
-.result-style{
-    color: rgb(43, 229, 5);
+.success-msg{
+    color: rgb(12, 195, 61);
     font-family: roboto;
-    font-size: 16px;
+    font-size: 17px;
 }
