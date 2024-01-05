@@ -1,117 +1,144 @@
-let formEl = document.getElementById("addUserForm");
+let formElement = document.getElementById("mainForm");
 
-let nameEl = document.getElementById("name");
-let emailEl = document.getElementById("email");
+let nameInputElement = document.getElementById("formName");
+let emailInputElement = document.getElementById("formEmail");
 
-let nameErrMsg = document.getElementById("nameErr");
-let emailErrMsg = document.getElementById("emailErr");
+let statusElement = document.getElementById("formStatus");
+let maleGenderElement = document.getElementById("genderMale");
+let femaleGenderElement = document.getElementById("genderFemale");
 
-let statusEl = document.getElementById("status");
-let genderM = document.getElementById("genderM");
-let genderF = document.getElementById("genderF");
+let nameErrMsg = document.getElementById("nameError");
+let emailErrMsg = document.getElementById("emailError");
 
-let resultEl = document.getElementById("resultEl");
+let successMsgEl = document.getElementById("successMsg");
 
-let formData = {
-    name:"",
-    email:"",
-    gender:"Male",
-    status:"Active"
+let bodyElement = {
+    name: "",
+    email: "",
+    status: "Active",
+    gender: "Male"
 }
 
-function getNameDetails(event){
-    let inputName = event.target.value;
-    formData.name = inputName;
+function checkForName(event){
+    if(event.target.value === ""){
+        nameErrMsg.textContent = "Required*";
+    }
+    else{
+        nameErrMsg.textContent = "";
+        bodyElement.name = event.target.value;
+    }
 }
 
-function getEmailDetails(event){
-    let inputEmail = event.target.value;
-    formData.email = inputEmail;
+function checkForEmail(event){
+    if(event.target.value === ""){
+        emailErrMsg.textContent = "Required*";
+    }
+    else{
+        emailErrMsg.textContent = "";
+        bodyElement.email = event.target.value;
+    }
 }
 
-function getStatusDetails(event){
-    formData.status = event.target.value;
+function checkForStatus(event){
+    bodyElement.status = event.target.value;
 }
 
-function getGenderDetails(event){
-    formData.gender = event.target.value;
+function checkForGender(event){
+    bodyElement.gender = event.target.value;
 }
 
 function validateForm(){
-    if(nameEl.value === ""){
+
+    let checkForErr = 0;
+
+    if(nameInputElement.value === ""){
         nameErrMsg.textContent = "Required*";
+        checkForErr = 1;
     }
     else{
         nameErrMsg.textContent = "";
     }
 
-    if(emailEl.value === ""){
+    if(emailInputElement.value === ""){
         emailErrMsg.textContent = "Required*";
+        checkForErr = 1 ;
     }
     else{
         emailErrMsg.textContent = "";
     }
+
+    return checkForErr;
+
 }
 
-function fetchData(){
-    resultEl.textContent = "";
+function submitForm(){
+
+    successMsgEl.textContent = "";
 
     let url = "https://gorest.co.in/public-api/users";
+
     let options = {
-        method:"POST",
-        headers:{
-            "Content-Type":"application/json",
-            Accept:"application/json",
 
-            //use your bearer token after bearer below
+        method: "POST",
+        headers: {
+            "Content-type": "application/json",
+            Accept: "application/json",
 
-            Authorization:"Bearer "
+            // add your own autorization bearer code
+            Authorization: "Bearer "
         },
-        body:JSON.stringify(formData)
+        body: JSON.stringify(bodyElement)
+
     }
 
-    fetch(url, options)
-    .then(function(response){
-        return response.json();
-    })
-    .then(function(jsonData){
+    let fetchedResponse = fetch(url, options);
 
-        console.log(jsonData);
+    let checkCalledResponse = async () =>  {
+        
+        try{
+            let response = await fetchedResponse;
+            let jsonData = await response.json();
+            console.log(jsonData);
 
-        if(jsonData.code === 422){
-            if(jsonData.data[0].message === "has already been taken"){
-                emailErrMsg.textContent = "Email already taken";
-
-                resultEl.textContent = "Failed";
-                resultEl.classList.remove("result-style");
-                resultEl.classList.add("err-msg");
+            // this below code will check if email already exist or not 
+            if(jsonData.code = 422){
+                try{ // any error means code there doesn't exist email already so catch block will execute
+                    if(jsonData.data[0].message === "has already been taken"){
+                        emailErrMsg.textContent = "This email has already been taken";
+                    }
+                }
+                catch(error){
+                    emailErrMsg.textContent = "";
+                    successMsgEl.textContent = "Form submitted successfully";
+                }
             }
+        
         }
+        catch(err){
+            console.log(err);
+        }
+    }
 
-        if(jsonData.code === 201){
-            resultEl.textContent = "success";
-            resultEl.classList.remove("err-msg");
-            resultEl.classList.add("result-style");
-        }
-        else{
-            resultEl.textContent = "Failed";
-            resultEl.classList.remove("result-style");
-            resultEl.classList.add("err-msg");
-        }
-    })
+    checkCalledResponse();
 
-    
 }
 
 function finalSubmission(event){
     event.preventDefault();
-    validateForm();
-    fetchData();
+
+    let checkForErr = validateForm();
+
+    if(checkForErr === 1){
+        return true;
+    }
+    
+    submitForm();
+    
 }
 
-nameEl.addEventListener("change",getNameDetails);
-emailEl.addEventListener("change",getEmailDetails);
-statusEl.addEventListener("change",getStatusDetails);
-genderM.addEventListener("change",getGenderDetails);
-genderF.addEventListener("change",getGenderDetails);
-formEl.addEventListener("submit",finalSubmission);
+nameInputElement.addEventListener("blur",checkForName);
+emailInputElement.addEventListener("blur",checkForEmail);
+statusElement.addEventListener("change",checkForStatus);
+maleGenderElement.addEventListener("change",checkForGender);
+femaleGenderElement.addEventListener("change",checkForGender);
+formElement.addEventListener("submit",finalSubmission);
