@@ -106,6 +106,9 @@ function submitForm(){
                     if(jsonData.data[0].message === "has already been taken"){
                         emailErrMsg.textContent = "This email has already been taken";
                     }
+                    else if(jsonData.data[0].message === "is invalid"){
+                        emailErrMsg.textContent = "Please provide valid email";
+                    }
                 }
                 catch(error){
                     emailErrMsg.textContent = "";
