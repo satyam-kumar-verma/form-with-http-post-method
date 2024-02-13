@@ -101,19 +101,18 @@ function submitForm(){
             console.log(jsonData);
 
             // this below code will check if email already exist or not 
-            if(jsonData.code = 422){
-                try{ // any error means code there doesn't exist email already so catch block will execute
-                    if(jsonData.data[0].message === "has already been taken"){
+            // this below code will check any default in form filling or if email already exist or not 
+            if(jsonData.code === 422){
+                if(jsonData.data[0].message === "has already been taken"){
                         emailErrMsg.textContent = "This email has already been taken";
-                    }
-                    else if(jsonData.data[0].message === "is invalid"){
+                }
+                else if(jsonData.data[0].message === "is invalid"){
                         emailErrMsg.textContent = "Please provide valid email";
-                    }
                 }
-                catch(error){
-                    emailErrMsg.textContent = "";
-                    successMsgEl.textContent = "Form submitted successfully";
-                }
+            }
+            else if(jsonData.code === 201){
+                emailErrMsg.textContent = "";
+                successMsgEl.textContent = "Form submitted successfully";
             }
         
         }
