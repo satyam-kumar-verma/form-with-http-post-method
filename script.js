@@ -91,12 +91,10 @@ function submitForm(){
 
     }
 
-    let fetchedResponse = fetch(url, options);
-
     let checkCalledResponse = async () =>  {
         
         try{
-            let response = await fetchedResponse;
+            let response = await fetch(url, options);
             let jsonData = await response.json();
             console.log(jsonData);
 
